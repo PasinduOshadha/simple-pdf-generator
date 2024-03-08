@@ -1,10 +1,13 @@
 // Import required modules
 const express = require('express');
+require('dotenv').config()
+
 
 // Create an Express application
 const app = express();
 
 const pdfRouter = require('./routes/createpdf')
+
 
 // Define a route for the home page
 app.get('/', (req, res) => {
