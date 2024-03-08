@@ -100,10 +100,10 @@ async function sendEmailWithAttachment(receiverEmail, attachmentPath) {
         from: '"Your Name" <mailbox.pasindu@gmail.com>', // sender address
         to: 'mailbox.pasindu@gmail.com', // list of receivers
         subject: 'PDF and API Call Details herer', // Subject line
-        text: `Please find the attached PDF and API call details. ${attachmentPath}`, // plain text body
+        text: `Please find the attached PDF and API call details.`, // plain text body
         attachments: [
             {
-                filename: `submission.pdf_${receiverEmail}`,
+                filename: `submission_${receiverEmail}.pdf`,
                 path: attachmentPath,
                 contentType: 'application/pdf'
             }
