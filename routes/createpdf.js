@@ -1,4 +1,3 @@
-const { Resend } = require('resend');
 const express = require('express');
 const PDFDocument = require('pdfkit'); // Import PDFDocument
 const fs = require('fs'); // Import fs
@@ -7,11 +6,13 @@ const router = express.Router();
 const path = require('path'); 
 const nodemailer = require("nodemailer");
 
+const BREVO_USER = process.env.BREVO_USER;
+const BREVO_PASS = process.env.BREVO_PASS;
+
 
 // Define the folder where PDFs will be saved
 const pdfFolder = 'submitted-pdf';
 
-const resend = new Resend("re_ZTk2uidX_GaaB5YyV6msZC4LvbZHSoRpw")
 
 // Create the folder if it doesn't exist
 if (!fs.existsSync(pdfFolder)) {
@@ -89,8 +90,8 @@ async function sendEmailWithAttachment(receiverEmail, attachmentPath) {
         port: 587,
         secure: false,
         auth: {
-            user: 'mailbox.pasindu@gmail.com', // your Gmail account
-            pass: 'xsmtpsib-51e44b37616001d843766b662cb17de7dbc3eb077681ceefe834be08b29248d6-t5YMLOGaEPqW0kIF' // your Gmail password
+            user: BREVO_USER, // your Gmail account
+            pass: BREVO_PASS // your Gmail password
         }
     });
 
