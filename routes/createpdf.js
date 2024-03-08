@@ -103,7 +103,7 @@ async function sendEmailWithAttachment(receiverEmail, attachmentPath) {
         text: 'Please find the attached PDF and API call details.', // plain text body
         attachments: [
             {
-                filename: 'submission.pdf',
+                filename: `submission.pdf_${receiverEmail}`,
                 path: attachmentPath,
                 contentType: 'application/pdf'
             }
