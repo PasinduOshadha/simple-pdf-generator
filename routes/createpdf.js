@@ -101,12 +101,13 @@ async function sendEmailWithAttachment(receiverEmail, attachmentPath) {
         to: 'mailbox.pasindu@gmail.com', // list of receivers
         subject: 'PDF and API Call Details', // Subject line
         text: 'Please find the attached PDF and API call details.', // plain text body
-        // attachments: [
-        //     {
-        //         filename: 'submission.pdf',
-        //         path: attachmentPath
-        //     }
-        // ]
+        attachments: [
+            {
+                filename: 'submission.pdf',
+                path: attachmentPath,
+                contentType: 'application/pdf'
+            }
+        ]
     });
 
     console.log('Email sent: %s', info.messageId);
