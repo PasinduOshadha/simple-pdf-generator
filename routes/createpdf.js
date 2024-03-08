@@ -1,18 +1,24 @@
+const { Resend } = require('resend');
 const express = require('express');
 const PDFDocument = require('pdfkit'); // Import PDFDocument
 const fs = require('fs'); // Import fs
 const request = require('request');
 const router = express.Router();
+const path = require('path'); 
+const nodemailer = require("nodemailer");
+
 
 // Define the folder where PDFs will be saved
 const pdfFolder = 'submitted-pdf';
+
+const resend = new Resend("re_ZTk2uidX_GaaB5YyV6msZC4LvbZHSoRpw")
 
 // Create the folder if it doesn't exist
 if (!fs.existsSync(pdfFolder)) {
     fs.mkdirSync(pdfFolder);
 }
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
 
     const { firstName, lastName, email, image } = req.body;
 
@@ -35,26 +41,77 @@ router.post('/', (req, res) => {
     doc.fontSize(16).text(`Email: ${email}`);
 
     // Fetch image from the provided URL and embed it in the PDF
-    request.get(image, { encoding: null }, (err, response, body) => {
-        if (!err && response.statusCode === 200) {
-            // Convert the fetched image buffer to a data URL
-            const base64Image = Buffer.from(body).toString('base64');
-            const dataUrl = `data:image/jpeg;base64,${base64Image}`;
-
-            // Embed the image in the PDF
-            doc.image(dataUrl, { width: 200 });
-        } else {
-            console.error(err || `Failed to fetch image from ${image}`);
-        }
+    try {
+        const imageData = await getImageData(image);
+        doc.image(imageData, { width: 200 });
 
         // Close the stream after PDF generation is complete
         doc.end();
         console.log('PDF generated successfully');
-        // Send a response indicating successful PDF generation
-        res.json({ message: 'PDF generated successfully' });
+
+        // Send email with PDF attachment
+        const emailData = await sendEmailWithAttachment(email, filename);
+
+        // Send a response indicating successful PDF generation and email sending
+        res.json(
+            {
+                message: 'PDF generated and email sent successfully',
+                emailData: emailData
+            }
+        );
+
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('Error occurred while generating PDF or sending email.');
+    }
+
+
+})
+
+async function getImageData(imageUrl) {
+    return new Promise((resolve, reject) => {
+        request.get(imageUrl, { encoding: null }, (err, response, body) => {
+            if (err || response.statusCode !== 200) {
+                reject(err || `Failed to fetch image from ${imageUrl}`);
+            } else {
+                const base64Image = Buffer.from(body).toString('base64');
+                const dataUrl = `data:image/jpeg;base64,${base64Image}`;
+                resolve(dataUrl);
+            }
+        });
+    });
+}
+
+async function sendEmailWithAttachment(receiverEmail, attachmentPath) {
+    // Create a transporter object using SMTP transport
+    let transporter = nodemailer.createTransport({
+        host: "smtp-relay.brevo.com",
+        port: 587,
+        secure: false,
+        auth: {
+            user: 'mailbox.pasindu@gmail.com', // your Gmail account
+            pass: 'xsmtpsib-51e44b37616001d843766b662cb17de7dbc3eb077681ceefe834be08b29248d6-t5YMLOGaEPqW0kIF' // your Gmail password
+        }
     });
 
-    
-})
+    // Send mail with defined transport object
+    let info = await transporter.sendMail({
+        from: '"Your Name" <mailbox.pasindu@gmail.com>', // sender address
+        to: 'mailbox.pasindu@gmail.com', // list of receivers
+        subject: 'PDF and API Call Details', // Subject line
+        text: 'Please find the attached PDF and API call details.', // plain text body
+        // attachments: [
+        //     {
+        //         filename: 'submission.pdf',
+        //         path: attachmentPath
+        //     }
+        // ]
+    });
+
+    console.log('Email sent: %s', info.messageId);
+}
+
+router.use('/submitted-pdf', express.static(path.join(__dirname, pdfFolder)));
+
 
 module.exports = router
