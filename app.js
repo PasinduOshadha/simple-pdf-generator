@@ -2,10 +2,8 @@
 const express = require('express');
 require('dotenv').config()
 
-
 // Create an Express application
 const app = express();
-
 const pdfRouter = require('./routes/createpdf')
 
 
@@ -16,9 +14,7 @@ app.get('/', (req, res) => {
 
 // Middleware to parse JSON
 app.use(express.json());
-
 app.use("/createpdf", pdfRouter)
-
 
 // Start the server
 const PORT = process.env.PORT || 3000;
