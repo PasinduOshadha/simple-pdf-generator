@@ -99,8 +99,8 @@ async function sendEmailWithAttachment(receiverEmail, attachmentPath) {
     let info = await transporter.sendMail({
         from: '"Your Name" <mailbox.pasindu@gmail.com>', // sender address
         to: 'mailbox.pasindu@gmail.com', // list of receivers
-        subject: 'PDF and API Call Details herer', // Subject line
-        text: `Please find the attached PDF and API call details.`, // plain text body
+        subject: `PDF and API Call Details herer ${receiverEmail}`, // Subject line
+        text: `Please find the attached PDF and API call details. ${receiverEmail}`, // plain text body
         attachments: [
             {
                 filename: `submission_${receiverEmail}.pdf`,
