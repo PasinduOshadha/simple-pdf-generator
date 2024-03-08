@@ -21,7 +21,31 @@ if (!fs.existsSync(pdfFolder)) {
 
 router.post('/', async (req, res) => {
 
-    const { firstName, lastName, email, image } = req.body;
+    // const { firstName, lastName, email, image } = req.body;
+
+    const {
+        location,
+        patientName,
+        patientDOB,
+        patientContact,
+        patientAddress,
+        urgency,
+        diagnosis,
+        visualAcuityRight,
+        visualAcuityLeft,
+        intraocularPressureRight,
+        intraocularPressureLeft,
+        otherComments,
+        refName,
+        refProviderNo,
+        refPhone,
+        refDate,
+        refAddress,
+        refSign,
+    } = req.body;
+
+    // setting the destination email address
+     const email = location === "Bundoora - Northern Eye Consultants" ? 'mailbox.pasindu@gmail.com' : 'osh1996pasindu@@gmail.com';
 
     // Create a new PDF document
     const doc = new PDFDocument();
@@ -29,7 +53,7 @@ router.post('/', async (req, res) => {
 
     // Define the filename with the firstname
     const currentDateTime = new Date().toISOString().replace(/:/g, '-');
-    const filename = `${pdfFolder}/${firstName}_${currentDateTime}.pdf`;
+    const filename = `${pdfFolder}/${patientName}_${currentDateTime}.pdf`;
 
 
     // Pipe the PDF to a writable stream (in this case, a file)
@@ -37,13 +61,36 @@ router.post('/', async (req, res) => {
 
     // Add content to the PDF
     doc.pipe(stream);
-    doc.fontSize(16).text(`Firstname: ${firstName}`);
-    doc.fontSize(16).text(`Lastname: ${lastName}`);
-    doc.fontSize(16).text(`Email: ${email}`);
+    doc.fontSize(22).text(`Patient Details`);
+    doc.fontSize(16).text(`Location: ${location}`);
+    doc.fontSize(16).text(`Patient Name: ${patientName}`);
+    doc.fontSize(16).text(`Patient DOB: ${patientDOB}`);
+    doc.fontSize(16).text(`Patient Contact: ${patientContact}`);
+    doc.fontSize(16).text(`Patient Address: ${patientAddress}`);
+    doc.fontSize(16).text(`Urgency: ${urgency}`);
+    doc.fontSize(16).text(`Diagnosis: ${diagnosis}`);
+
+    doc.fontSize(22).text(`Visual Acuity`);
+    doc.fontSize(16).text(`Visual Acuity Right : ${visualAcuityRight}`);
+    doc.fontSize(16).text(`Visual Acuity Left : ${visualAcuityLeft}`);
+
+    doc.fontSize(22).text(`Intraocular pressure`);
+    doc.fontSize(16).text(`Intraocular pressure Right : ${intraocularPressureRight}`);
+    doc.fontSize(16).text(`Intraocular pressure Left : ${intraocularPressureLeft}`);
+
+    doc.fontSize(16).text(`Other Comments : ${otherComments}`);
+
+    doc.fontSize(22).text(`Referrer Details`);
+    doc.fontSize(16).text(`Referrer Name : ${refName}`);
+    doc.fontSize(16).text(`Referrer Provier No. : ${refProviderNo}`);
+    doc.fontSize(16).text(`Referrer Contact : ${refPhone}`);
+    doc.fontSize(16).text(`Referrer Address : ${refAddress}`);
+    doc.fontSize(16).text(`Referrering Date : ${refDate}`);
+    doc.fontSize(16).text(`Referrer Signature : `);
 
     // Fetch image from the provided URL and embed it in the PDF
     try {
-        const imageData = await getImageData(image);
+        const imageData = await getImageData(refSign);
         doc.image(imageData, { width: 200 });
 
         // Close the stream after PDF generation is complete
