@@ -3,7 +3,7 @@ const PDFDocument = require('pdfkit'); // Import PDFDocument
 const fs = require('fs'); // Import fs
 const request = require('request');
 const router = express.Router();
-const path = require('path'); 
+const path = require('path');
 const nodemailer = require("nodemailer");
 
 const BREVO_USER = process.env.BREVO_USER;
@@ -45,10 +45,50 @@ router.post('/', async (req, res) => {
     } = req.body;
 
     // setting the destination email address
-     const email = location === "Bundoora - Northern Eye Consultants" ? 'mailbox.pasindu@gmail.com' : 'osh1996pasindu@@gmail.com';
+    const email = location === "Bundoora - Northern Eye Consultants" ? 'mailbox.pasindu@gmail.com' : 'osh1996pasindu@@gmail.com';
+    const currentDate = new Date().toLocaleString();
+
+    // email body 
+    let emailBody = `<div style="font-weight:bold;font-size:22px;margin-bottom:30px;">New Submission from Referral Form</div>`;
+    emailBody += `<div style="font-weight:bold;font-size:20px;">Patient Details</div>`;
+    emailBody += `<div>Name: ${patientName}
+    Date of Birth: ${patientDOB}
+    Contact Number: ${patientContact}
+    Address: ${patientAddress}
+    </div>`;
+
+    emailBody += `<div">Urgency: ${urgency}</div>`;
+    emailBody += `<div style="margin-bottom:20px;">Diagnosis: ${diagnosis}</div>`;
+    emailBody += `<div style="font-weight:bold;font-size:20px;">Visual Acuity</div>`;
+    emailBody += `<div style="margin-bottom:20px;> Right: ${visualAcuityRight}
+    Left: ${visualAcuityLeft}
+    </div>`;
+
+    emailBody += `<div style="font-weight:bold;font-size:20px;">Intraocular Pressure</div>`;
+    emailBody += `<div style="margin-bottom:20px;"> Right: ${intraocularPressureRight} 
+    Left: ${intraocularPressureLeft}
+    </div>`;
+
+    emailBody += `<div style="font-weight:bold;font-size:20px;">Other Comments</div>`;
+    emailBody += `<div style="margin-bottom:20px;">${otherComments}</div>`;
+
+    emailBody += `<div style="font-weight:bold;font-size:20px;">Referrer Details</div>`;
+    emailBody += `<div style="margin-bottom:50px;">Name: ${refName}
+    Provider No: ${refProviderNo}
+    Contact Number: ${refPhone}
+    Referrer Date: ${refDate}
+    Referrer Address: ${refAddress}
+    Referrer Signature: 
+    <img src="${refSign}" width="200px" />
+    </div>`;
+
 
     // Create a new PDF document
     const doc = new PDFDocument();
+
+    // Set the top margin
+    const topMargin = 10;
+    doc.y = topMargin;
 
 
     // Define the filename with the firstname
@@ -61,56 +101,57 @@ router.post('/', async (req, res) => {
 
     // Add content to the PDF
     doc.pipe(stream);
-    doc.fontSize(22).text(`Patient Details`);
-    doc.fontSize(16).text(`Location: ${location}`);
-    doc.fontSize(16).text(`Patient Name: ${patientName}`);
-    doc.fontSize(16).text(`Patient DOB: ${patientDOB}`);
-    doc.fontSize(16).text(`Patient Contact: ${patientContact}`);
-    doc.fontSize(16).text(`Patient Address: ${patientAddress}`);
-    doc.fontSize(16).text(`Urgency: ${urgency}`);
-    doc.fontSize(16).text(`Diagnosis: ${diagnosis}`);
 
-    doc.fontSize(22).text(`Visual Acuity`);
-    doc.fontSize(16).text(`Visual Acuity Right : ${visualAcuityRight}`);
-    doc.fontSize(16).text(`Visual Acuity Left : ${visualAcuityLeft}`);
+    // add website logo to the doc
+    const siteLogo = await getImageData('https://drgoh.com.au/wp-content/uploads/2023/11/Group-20184.png');
+    doc.image(siteLogo, { width: 200, align: 'center' });
 
-    doc.fontSize(22).text(`Intraocular pressure`);
-    doc.fontSize(16).text(`Intraocular pressure Right : ${intraocularPressureRight}`);
-    doc.fontSize(16).text(`Intraocular pressure Left : ${intraocularPressureLeft}`);
+    doc.fontSize(16).font('Helvetica-Bold').text(`Patient Details`, doc.x, doc.y + 30);
+    doc.fontSize(12).font('Helvetica').text(`Location: ${location}`);
+    doc.fontSize(12).text(`Patient Name: ${patientName}`);
+    doc.fontSize(12).text(`Patient DOB: ${patientDOB}`);
+    doc.fontSize(12).text(`Patient Contact: ${patientContact}`);
+    doc.fontSize(12).text(`Patient Address: ${patientAddress}`);
+    doc.fontSize(12).text(`Urgency: ${urgency}`);
+    doc.fontSize(12).text(`Diagnosis: ${diagnosis}`);
 
-    doc.fontSize(16).text(`Other Comments : ${otherComments}`);
 
-    doc.fontSize(22).text(`Referrer Details`);
-    doc.fontSize(16).text(`Referrer Name : ${refName}`);
-    doc.fontSize(16).text(`Referrer Provier No. : ${refProviderNo}`);
-    doc.fontSize(16).text(`Referrer Contact : ${refPhone}`);
-    doc.fontSize(16).text(`Referrer Address : ${refAddress}`);
-    doc.fontSize(16).text(`Referrering Date : ${refDate}`);
-    doc.fontSize(16).text(`Referrer Signature : `);
+    doc.fontSize(16).font('Helvetica-Bold').text(`Visual Acuity`, doc.x, doc.y + 20);
+    doc.fontSize(12).font('Helvetica').text(`Visual Acuity Right : ${visualAcuityRight}`);
+    doc.fontSize(12).text(`Visual Acuity Left : ${visualAcuityLeft}`);
+
+    doc.fontSize(16).font('Helvetica-Bold').text(`Intraocular pressure`, doc.x, doc.y + 20);
+    doc.fontSize(12).font('Helvetica').text(`Intraocular pressure Right : ${intraocularPressureRight}`);
+    doc.fontSize(12).text(`Intraocular pressure Left : ${intraocularPressureLeft}`);
+
+    doc.fontSize(12).text(`Other Comments : ${otherComments}`);
+
+    doc.fontSize(16).font('Helvetica-Bold').text(`Referrer Details`, doc.x, doc.y + 20);
+    doc.fontSize(12).font('Helvetica').text(`Referrer Name : ${refName}`);
+    doc.fontSize(12).text(`Referrer Provier No. : ${refProviderNo}`);
+    doc.fontSize(12).text(`Referrer Contact : ${refPhone}`);
+    doc.fontSize(12).text(`Referrer Address : ${refAddress}`);
+    doc.fontSize(12).text(`Referrering Date : ${refDate}`);
+    doc.fontSize(12).text(`Referrer Signature : `);
 
     // Fetch image from the provided URL and embed it in the PDF
     try {
         const imageData = await getImageData(refSign);
         doc.image(imageData, { width: 200 });
 
-        // Close the stream after PDF generation is complete
-        doc.end();
         console.log('PDF generated successfully');
 
-        // Send email with PDF attachment
-        const emailData = await sendEmailWithAttachment(email, filename);
-
-        // Send a response indicating successful PDF generation and email sending
-        res.json(
-            {
-                message: 'PDF generated and email sent successfully',
-                emailData: emailData
-            }
-        );
 
     } catch (error) {
         console.error('Error:', error);
         res.status(500).send('Error occurred while generating PDF or sending email.');
+    }
+    finally {
+        // Close the stream after PDF generation is complete
+        doc.fontSize(7).font('Courier-Oblique').text(`PDF generated on: ${currentDate}`, doc.x, doc.y + 30); // Adjust coordinates as needed
+        doc.end();
+        const emailData = await sendEmailWithAttachment(email, filename, emailBody);
+        res.json({ message: 'PDF sent successfully' });
     }
 
 
@@ -130,7 +171,7 @@ async function getImageData(imageUrl) {
     });
 }
 
-async function sendEmailWithAttachment(receiverEmail, attachmentPath) {
+async function sendEmailWithAttachment(receiverEmail, attachmentPath, emailContent) {
     // Create a transporter object using SMTP transport
     let transporter = nodemailer.createTransport({
         host: "smtp-relay.brevo.com",
@@ -144,10 +185,10 @@ async function sendEmailWithAttachment(receiverEmail, attachmentPath) {
 
     // Send mail with defined transport object
     let info = await transporter.sendMail({
-        from: '"Your Name" <mailbox.pasindu@gmail.com>', // sender address
+        from: '"Dr. Jonathan Goh" <mailbox.pasindu@gmail.com>', // sender address
         to: 'mailbox.pasindu@gmail.com', // list of receivers
-        subject: `New Submission from ${receiverEmail}`, // Subject line
-        text: `New submission from: ${receiverEmail}`, // plain text body
+        subject: `New Submission from Refferal Form`, // Subject line
+        text: `${emailContent}`, // plain text body
         attachments: [
             {
                 filename: `submission_${receiverEmail}.pdf`,
