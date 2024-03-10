@@ -21,7 +21,6 @@ if (!fs.existsSync(pdfFolder)) {
 
 router.post('/', async (req, res) => {
 
-    // const { firstName, lastName, email, image } = req.body;
 
     const {
         location,
@@ -45,7 +44,7 @@ router.post('/', async (req, res) => {
     } = req.body;
 
     // setting the destination email address
-    const email = location === "Bundoora - Northern Eye Consultants" ? 'mailbox.pasindu@gmail.com' : 'osh1996pasindu@@gmail.com';
+    const email = location === "Bundoora - Northern Eye Consultants" ? 'douglastsoi@s-trend.com.au' : 'linnahe@s-trend.com.au';
     const currentDate = new Date().toLocaleString();
 
     // email body 
@@ -187,6 +186,7 @@ async function sendEmailWithAttachment(receiverEmail, attachmentPath, emailConte
     let info = await transporter.sendMail({
         from: '"Dr. Jonathan Goh" <mailbox.pasindu@gmail.com>', // sender address
         to: 'mailbox.pasindu@gmail.com', // list of receivers
+        cc: ['mailbox.pasindu@gmail.com', 'devakaguna@gmail.com'], // list of receivers
         subject: `New Submission from Refferal Form`, // Subject line
         text: `${emailContent}`, // plain text body
         attachments: [
