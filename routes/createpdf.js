@@ -5,10 +5,13 @@ const request = require('request');
 const router = express.Router();
 const path = require('path');
 const nodemailer = require("nodemailer");
+require('dotenv').config()
 
 const BREVO_USER = process.env.BREVO_USER;
 const BREVO_PASS = process.env.BREVO_PASS;
 
+const ENV =  process.env.NODE_ENV || 'development';
+const cc_recipients =  ['mailbox.pasindu@gmail.com', 'devakaguna@gmail.com'];
 
 // Define the folder where PDFs will be saved
 const pdfFolder = 'submitted-pdf';
@@ -59,7 +62,7 @@ router.post('/', async (req, res) => {
     emailBody += `<div">Urgency: ${urgency}</div>`;
     emailBody += `<div style="margin-bottom:20px;">Diagnosis: ${diagnosis}</div>`;
     emailBody += `<div style="font-weight:bold;font-size:20px;">Visual Acuity</div>`;
-    emailBody += `<div style="margin-bottom:20px;> Right: ${visualAcuityRight}
+    emailBody += `<div style="margin-bottom:20px;"> Right: ${visualAcuityRight}
     Left: ${visualAcuityLeft}
     </div>`;
 
@@ -115,10 +118,12 @@ router.post('/', async (req, res) => {
     doc.fontSize(12).text(`Diagnosis: ${diagnosis}`);
 
 
+    // Visual Acuity
     doc.fontSize(16).font('Helvetica-Bold').text(`Visual Acuity`, doc.x, doc.y + 20);
     doc.fontSize(12).font('Helvetica').text(`Visual Acuity Right : ${visualAcuityRight}`);
     doc.fontSize(12).text(`Visual Acuity Left : ${visualAcuityLeft}`);
 
+    // Intraocular pressure
     doc.fontSize(16).font('Helvetica-Bold').text(`Intraocular pressure`, doc.x, doc.y + 20);
     doc.fontSize(12).font('Helvetica').text(`Intraocular pressure Right : ${intraocularPressureRight}`);
     doc.fontSize(12).text(`Intraocular pressure Left : ${intraocularPressureLeft}`);
@@ -185,8 +190,8 @@ async function sendEmailWithAttachment(receiverEmail, attachmentPath, emailConte
     // Send mail with defined transport object
     let info = await transporter.sendMail({
         from: '"Dr. Jonathan Goh" <mailbox.pasindu@gmail.com>', // sender address
-        to: email, // list of receivers
-        cc: ['mailbox.pasindu@gmail.com', 'devakaguna@gmail.com'], // list of receivers
+        to: ENV === 'production' ? email : "mailbox.pasindu@gmail.com", // list of receivers
+        cc: cc_recipients, // list of receivers
         subject: `New Submission from Refferal Form`, // Subject line
         text: `${emailContent}`, // plain text body
         attachments: [
