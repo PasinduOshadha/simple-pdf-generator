@@ -4,12 +4,13 @@ require('dotenv').config()
 
 // Create an Express application
 const app = express();
-const pdfRouter = require('./routes/createpdf')
+const pdfRouter = require('./routes/createpdf');
+const ENV =  process.env.NODE_ENV || 'development';
 
 
 // Define a route for the home page
 app.get('/', (req, res) => {
-    res.send('<h1>Hello, World 1!</h1>');
+    res.send(`<h1>Hello, World env: ${ENV}!</h1>`);
 });
 
 // Middleware to parse JSON
