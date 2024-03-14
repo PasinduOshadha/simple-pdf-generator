@@ -34,6 +34,7 @@ router.post('/', async (req, res) => {
         patientAddress,
         urgency,
         diagnosis,
+        otherDiagnosis,
         visualAcuityRight,
         visualAcuityLeft,
         intraocularPressureRight,
@@ -61,7 +62,13 @@ router.post('/', async (req, res) => {
     </div>`;
 
     emailBody += `<div">Urgency: ${urgency}</div>`;
-    emailBody += `<div style="margin-bottom:20px;">Diagnosis: ${diagnosis}</div>`;
+    if (otherDiagnosis) {
+        emailBody += `<div style="margin-bottom:20px;">Diagnosis: ${diagnosis}
+        Diagnosis Details: ${otherDiagnosis}</div>`;
+    }
+    else {
+        emailBody += `<div style="margin-bottom:20px;">Diagnosis: ${diagnosis}</div>`;
+    }
     emailBody += `<div style="font-weight:bold;font-size:20px;">Visual Acuity</div>`;
     emailBody += `<div style="margin-bottom:20px;"> Right: ${visualAcuityRight}
     Left: ${visualAcuityLeft}
@@ -118,6 +125,9 @@ router.post('/', async (req, res) => {
     doc.fontSize(12).text(`Urgency: ${urgency}`);
     doc.fontSize(12).text(`Diagnosis: ${diagnosis}`);
 
+    if (otherDiagnosis) {
+        doc.fontSize(12).text(`Other Diagnosis: ${otherDiagnosis}`);
+    }
 
     // Visual Acuity
     doc.fontSize(16).font('Helvetica-Bold').text(`Visual Acuity`, doc.x, doc.y + 20);
@@ -191,7 +201,7 @@ async function sendEmailWithAttachment(receiverEmail, attachmentPath, emailConte
     // Send mail with defined transport object
     let info = await transporter.sendMail({
         from: '"Dr. Jonathan Goh" <mailbox.pasindu@gmail.com>', // sender address
-        to: "mailbox.pasindu@gmail.com", // list of receivers
+        to: email, // list of receivers
         cc: cc_recipients, // list of receivers
         subject: `New Submission from Refferal Form`, // Subject line
         text: `${emailContent}`, // plain text body
