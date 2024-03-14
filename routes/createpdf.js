@@ -16,7 +16,7 @@ const cc_recipients =  ['mailbox.pasindu@gmail.com', 'devakaguna@gmail.com'];
 // Define the folder where PDFs will be saved
 const pdfFolder = 'submitted-pdf';
 
-console.log(ENV);
+
 
 // Create the folder if it doesn't exist
 if (!fs.existsSync(pdfFolder)) {
