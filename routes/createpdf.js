@@ -54,6 +54,8 @@ router.post('/', async (req, res) => {
 
     // email body 
     let emailBody = `<div style="font-weight:bold;font-size:22px;margin-bottom:30px;">New Submission from Referral Form</div>`;
+    emailBody += `<div style="font-weight:bold;font-size:20px;">Location: </div>`;
+    emailBody += `<div style="margin-bottom:20px;">${location}</div>`;
     emailBody += `<div style="font-weight:bold;font-size:20px;">Patient Details</div>`;
     emailBody += `<div>Name: ${patientName}
     Date of Birth: ${patientDOB}
@@ -201,8 +203,8 @@ async function sendEmailWithAttachment(receiverEmail, attachmentPath, emailConte
     // Send mail with defined transport object
     let info = await transporter.sendMail({
         from: '"Dr. Jonathan Goh" <mailbox.pasindu@gmail.com>', // sender address
-        to: receiverEmail, // list of receivers
-        cc: cc_recipients, // list of receivers
+        to: 'mailbox.pasindu@gmail.com', // list of receivers
+        //cc: cc_recipients, // list of receivers
         subject: `New Submission from Refferal Form`, // Subject line
         text: `${emailContent}`, // plain text body
         attachments: [
