@@ -16,7 +16,7 @@ const cc_recipients =  ['mailbox.pasindu@gmail.com', 'devakaguna@gmail.com'];
 // Define the folder where PDFs will be saved
 const pdfFolder = 'submitted-pdf';
 
-console.log(ENV);
+
 
 // Create the folder if it doesn't exist
 if (!fs.existsSync(pdfFolder)) {
@@ -201,7 +201,7 @@ async function sendEmailWithAttachment(receiverEmail, attachmentPath, emailConte
     // Send mail with defined transport object
     let info = await transporter.sendMail({
         from: '"Dr. Jonathan Goh" <mailbox.pasindu@gmail.com>', // sender address
-        to: email, // list of receivers
+        to: receiverEmail, // list of receivers
         cc: cc_recipients, // list of receivers
         subject: `New Submission from Refferal Form`, // Subject line
         text: `${emailContent}`, // plain text body
