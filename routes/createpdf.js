@@ -54,6 +54,8 @@ router.post('/', async (req, res) => {
 
     // email body 
     let emailBody = `<div style="font-weight:bold;font-size:22px;margin-bottom:30px;">New Submission from Referral Form</div>`;
+    emailBody += `<div style="font-weight:bold;font-size:20px;">Location: </div>`;
+    emailBody += `<div style="margin-bottom:20px;">${location}</div>`;
     emailBody += `<div style="font-weight:bold;font-size:20px;">Patient Details</div>`;
     emailBody += `<div>Name: ${patientName}
     Date of Birth: ${patientDOB}
