@@ -202,10 +202,10 @@ async function sendEmailWithAttachment(receiverEmail, attachmentPath, emailConte
 
     // Send mail with defined transport object
     let info = await transporter.sendMail({
-        from: '"Dr. Jonathan Goh" <mailbox.pasindu@gmail.com>', // sender address
+        from: '"Dr. Jonathan Goh" <info@drgoh.com.au>', // sender address
         to: receiverEmail, // list of receivers
         cc: cc_recipients, // list of receivers
-        subject: `New Submission from Refferal Form`, // Subject line
+        subject: `New Submission from Referral Form`, // Subject line
         text: `${emailContent}`, // plain text body
         attachments: [
             {
