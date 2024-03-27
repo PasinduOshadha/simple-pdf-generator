@@ -11,7 +11,6 @@ This a simple API for creating and sending generated PDF as an email, along with
 - Wordpress integration with Contact From 7
 
 
-
 ## Tech 
 
 
