@@ -11,7 +11,7 @@ const BREVO_USER = process.env.BREVO_USER;
 const BREVO_PASS = process.env.BREVO_PASS;
 
 const ENV =  process.env.NODE_ENV || 'development';
-const cc_recipients =  ['mailbox.pasindu@gmail.com', 'devakaguna@gmail.com'];
+const cc_recipients =  ['douglastsoi@s-trend.com.au', 'linnahe@s-trend.com.au'];
 
 // Define the folder where PDFs will be saved
 const pdfFolder = 'submitted-pdf';
@@ -49,7 +49,7 @@ router.post('/', async (req, res) => {
     } = req.body;
 
     // setting the destination email address
-    const email = location === "Bundoora - Northern Eye Consultants" ? 'douglastsoi@s-trend.com.au' : 'linnahe@s-trend.com.au';
+    const email = location === "Bundoora - Northern Eye Consultants" ? 'desk@northeye.com.au' : 'footscray@visioneyeinstitute.com';
     const currentDate = new Date().toLocaleString();
 
     // email body 
