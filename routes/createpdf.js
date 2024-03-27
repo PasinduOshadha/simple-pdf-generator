@@ -49,7 +49,7 @@ router.post('/', async (req, res) => {
     } = req.body;
 
     // setting the destination email address
-    const email = location === "Bundoora - Northern Eye Consultants" ? 'desk@northeye.com.au' : 'footscray@visioneyeinstitute.com';
+    const email = location === "Bundoora - Northern Eye Consultants" ? 'desk@northeye.com.au' : 'footscray@visioneyeinstitute.com.au';
     const currentDate = new Date().toLocaleString();
 
     // email body 
