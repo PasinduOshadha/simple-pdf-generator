@@ -132,3 +132,4 @@ dist
 
 submitted-pdf
 *.pdf
+.DS_Store
