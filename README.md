@@ -3,9 +3,6 @@
 
 This a simple API for creating and sending generated PDF as an email, along with all the details.
 
-- Type some Markdown on the left
-- See HTML in the right
-- ✨Magic ✨
 
 ## Features
 
