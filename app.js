@@ -16,7 +16,7 @@ app.use(cors({
 
 // Define a route for the home page
 app.get('/', (req, res) => {
-    res.send(`<h1>Hello, World env: ${ENV}!</h1>`);
+    res.send(`<h1>Hello, The env is: ${ENV}!</h1>`);
 });
 
 // Middleware to parse JSON
