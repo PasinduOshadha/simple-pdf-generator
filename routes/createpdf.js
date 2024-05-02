@@ -11,7 +11,7 @@ const BREVO_USER = process.env.BREVO_USER;
 const BREVO_PASS = process.env.BREVO_PASS;
 
 const ENV =  process.env.NODE_ENV || 'development';
-const cc_recipients =  ['douglastsoi@s-trend.com.au', 'linnahe@s-trend.com.au'];
+const cc_recipients =  ['info@drgoh.com.au'];
 
 // Define the folder where PDFs will be saved
 const pdfFolder = 'submitted-pdf';
@@ -204,7 +204,7 @@ async function sendEmailWithAttachment(receiverEmail, attachmentPath, emailConte
     let info = await transporter.sendMail({
         from: '"Dr. Jonathan Goh" <info@drgoh.com.au>', // sender address
         to: receiverEmail, // list of receivers
-        // cc: cc_recipients, // list of receivers
+        cc: cc_recipients, // list of receivers
         subject: `New Submission from Referral Form`, // Subject line
         text: `${emailContent}`, // plain text body
         attachments: [
